@@ -1,5 +1,6 @@
 import java.io.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +12,25 @@ public class TodoReadWrite {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] value = line.split(",");
-                LocalDate dueDate = LocalDate.parse(value[1]);
-                todos.add(new ToDo(value[0], dueDate));
+                if (value.length >= 2) { // Ensure there are at least two parts in the line
+                    String title = value[0].trim();
+                    String dateStr = value[1].trim();
+                    if (!dateStr.isEmpty() && !dateStr.equals("null")) { // Check for null or empty
+                        try {
+                            LocalDate dueDate = LocalDate.parse(dateStr);
+                            todos.add(new ToDo(title, dueDate));
+                        } catch (DateTimeParseException e) {
+                            System.out.println("Invalid date format in file: " + dateStr);
+                            // Handle or skip the invalid entry
+                        }
+                    } else {
+                        System.out.println("Invalid date format or null value in file: " + dateStr);
+                        // Handle or skip the invalid entry
+                    }
+                } else {
+                    System.out.println("Invalid data format in file: " + line);
+                    // Handle or skip the invalid entry
+                }
             }
         } catch (IOException e) {
             System.out.println("Read data error: " + e.getMessage());
@@ -21,28 +39,13 @@ public class TodoReadWrite {
     }
 
     public static void saveData(List<ToDo> todos, String filename) {
-        if (todos.isEmpty()) {
-            try {
-                // create filename;
-                FileWriter fileWriter = new FileWriter(filename);
-                fileWriter.close();
-            } catch (IOException e) {
-                System.out.println("Cannot create file");
-            }
-            return;
-        }
-
-        try (FileWriter fileWriter = new FileWriter(filename, true);
-             BufferedWriter writer = new BufferedWriter(fileWriter)) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             for (ToDo todo : todos) {
-                String line = todo.getTitle() + "," +
-                        todo.getUntil();
-                writer.write(line);
+                writer.write(todo.toTxtRow());
+                writer.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Can not open file to save" + e.getMessage());
+            System.out.println("Cannot open file to save: " + e.getMessage());
         }
     }
-
 }
-

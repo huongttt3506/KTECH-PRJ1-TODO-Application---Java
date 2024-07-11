@@ -1,14 +1,19 @@
 
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class ToDoApp {
-    private static ToDoList todoList = new ToDoList();
-    private static Scanner scanner = new Scanner(System.in);
+    private static ToDoList todoList;
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        todoList = new ToDoList();
         // First screen:
         System.out.print("Well come!\n");
         while (true) {
@@ -22,7 +27,13 @@ public class ToDoApp {
             System.out.println("5. Exit\n");
             // Input: (int) choice
             System.out.println("Input: ");
-            int choice = scanner.nextInt();
+            int choice;
+            try {choice = Integer.parseInt(scanner.nextLine());}
+            catch (NumberFormatException e) {
+                System.out.println("Input must be an integer (1 ~ 5)");
+                continue;
+            }
+            scanner.nextLine();
             switch (choice) {
                 case 1:
                     createTodo();
@@ -44,34 +55,39 @@ public class ToDoApp {
             }
         }
     }
-
+    
     //Display ToDoList
     private static void displayTodo() {
-        //If Todolist is empty:
+        List<ToDo> todos = todoList.getTodos();
+        todos.sort(Comparator.comparing(ToDo::getUntil));
+        int countUndone = 0;
+
         if (todoList.getTodos().isEmpty()) {
             System.out.println("You have no more TODOs left!!!\n");
-        }
-        // Else: not empty
-        else {
-            System.out.println("Your TODOs:");
-            // case: undone != 0
-            int countUndone = 0;
-            for (int i = 0; i < todoList.getTodos().size(); i++) {
-                ToDo todo = todoList.getTodos().get(i);
+        } else {
+            // Count undone TODOs
+            for (ToDo todo : todos) {
                 if (!todo.isDone()) {
-                    //Print list of to-do
                     countUndone++;
-                    System.out.println(countUndone + ". " + todo);
                 }
             }
-            //case: undone == 0
+
+            // Print number of TODOs left
             if (countUndone == 0) {
                 System.out.println("You have no more TODOs left!!!\n");
             } else if (countUndone == 1) {
-                System.out.println("You have 1 TODO left!!!\n");
+                System.out.println("You have 1 TODO left:");
             } else {
-                System.out.println("You have " + countUndone + " TODOs left!!!\n");
+                System.out.println("You have " + countUndone + " TODOs left:");
             }
+
+            // Print TODOs
+            for (int i = 0; i < todos.size(); i++) {
+                ToDo todo = todos.get(i);
+                String status = todo.isDone() ? "(Done)" : ""; // Check if TODO is done
+                System.out.println((i + 1) + ". " + todo.getTitle() + " " + status);
+            }
+            System.out.println(); // Blank line for spacing
         }
     }
 
@@ -79,7 +95,10 @@ public class ToDoApp {
     private static void createTodo() {
         System.out.println("Title: ");
         String title = scanner.nextLine();
-        scanner.nextLine();
+        if (title.isEmpty()) {
+            System.out.println("Title cannot be empty.");
+            return;
+        }
         LocalDate until = null;
         System.out.println("Until (yyyy-mm-dd): ");
         String untilStr = scanner.nextLine();
@@ -87,7 +106,7 @@ public class ToDoApp {
             until = LocalDate.parse(untilStr);
         }
         catch (DateTimeParseException e) {
-                System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
+            System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
             }
         todoList.create(title, until);
         System.out.println("Saved!!!\n");

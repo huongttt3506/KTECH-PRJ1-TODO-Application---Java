@@ -38,13 +38,20 @@ public class ToDo {
     public void setDone() {
         this.done = true;
     }
+
     @Override
     public String toString() {
         if (done) {
-            return title + " (Done)";
+            return "Title: " + title + "\n"
+                    + "Until: " + until + "\n" +
+                    "(done)\n";
+        } else {
+            return "Title: " + title + "\n"
+                    + "Until: " + until;
         }
-        else {
-            return title;
-        }
+    }
+
+    public String toTxtRow() {
+        return String.format("%s, %s, %s", title, until, done);
     }
 }
