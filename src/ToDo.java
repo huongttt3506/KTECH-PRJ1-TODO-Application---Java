@@ -1,21 +1,20 @@
 import java.time.LocalDate;
 
-//This class contains attributes: title, dueDate, done
+//This class contains attributes: title, until, done
 
 public class ToDo {
     private String title;
-    private LocalDate dueDate;
+    private LocalDate until;
     private boolean done;
 
     //Constructor
-    public ToDo(String title, LocalDate dueDate) {
+    public ToDo(String title, LocalDate until) {
         this.title = title;
-        this.dueDate = dueDate;
+        this.until = until;
         // The default when creating a new to-do  is unfinished
         this.done = false;
     }
     //Setter & Getter
-
     public String getTitle() {
         return title;
     }
@@ -24,12 +23,12 @@ public class ToDo {
         this.title = title;
     }
 
-    public LocalDate getDueDate() {
-        return dueDate;
+    public LocalDate getUntil() {
+        return until;
     }
 
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
+    public void setUntil(LocalDate until) {
+        this.until = until;
     }
 
     public boolean isDone() {
@@ -39,7 +38,6 @@ public class ToDo {
     public void setDone() {
         this.done = true;
     }
-
     @Override
     public String toString() {
         if (done) {

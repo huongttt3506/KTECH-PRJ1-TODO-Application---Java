@@ -1,6 +1,7 @@
 
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,9 +10,6 @@ public class ToDoApp {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        //Create new scanner and new TodoList to receive information
-        ToDoList toDoList = new ToDoList();
-        Scanner scanner = new Scanner(System.in);
         // First screen:
         System.out.print("Well come!\n");
         while (true) {
@@ -38,6 +36,7 @@ public class ToDoApp {
                     break;
                 case 4:
                     deleteTodo();
+                    break;
                 case 5:
                     System.out.println("Goodbye!");
                     return;
@@ -49,13 +48,13 @@ public class ToDoApp {
 
     //Display ToDoList
     private static void displayTodo() {
-        System.out.println("Your TODOs:");
-        // If Todolist is empty:
+        //If Todolist is empty:
         if (todoList.getTodos().isEmpty()) {
             System.out.println("You have no more TODOs left!!!\n");
         }
         // Else: not empty
         else {
+            System.out.println("Your TODOs:");
             // case: undone != 0
             int countUndone = 0;
             for (int i = 0; i < todoList.getTodos().size(); i++) {
@@ -76,24 +75,31 @@ public class ToDoApp {
             }
         }
     }
+
     //Index 1: Create ToDoList
-    private static void createTodo () {
+    private static void createTodo() {
         System.out.println("Title: ");
         String title = scanner.nextLine();
-        System.out.println("Until (yyyy-mm-dd: ");
-        String untilStr = scanner.nextLine();
-        LocalDate until = LocalDate.parse(untilStr);
-        ToDo toDo = new ToDo(title, until);
-        todoList.add((List<ToDo>) toDo);
+        scanner.nextLine();
+        LocalDate until = null;
+        while (until == null) {
+            System.out.println("Until (yyyy-mm-dd): ");
+            String untilStr = scanner.nextLine();
+            scanner.nextLine();
+            try {
+                until = LocalDate.parse(untilStr);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
+            }
+        }
+        todoList.create(title, until);
         System.out.println("Saved!!!\n");
     }
 
     //Edit ToDoList
-    private static void editTodo () {
-        //Case: todolist is empty:
-        if (todoList.getTodos().isEmpty()) {
-            System.out.println("You have no TODOs to edit\n");
-        } else {
+    private static void editTodo() {
+        displayTodo();
+        if(!todoList.getTodos().isEmpty()) {
             System.out.println("Edit TODO number: ");
             int index = scanner.nextInt() - 1;
             scanner.nextLine();
@@ -110,14 +116,13 @@ public class ToDoApp {
             todoList.edit(index, title, until);
             System.out.println("Saved!!!\n");
         }
+
     }
+
     //Finish
-    private static void finishTodo () {
-        // todolist is empty:
-        if (todoList.getTodos().isEmpty()) {
-            System.out.println("You have no TODOs to finish!\n");
-        }
-        else {
+    private static void finishTodo() {
+        displayTodo();
+        if (!todoList.getTodos().isEmpty()) {
             System.out.println("Finish TODO number: ");
             int index = scanner.nextInt() - 1;
             scanner.nextLine();
@@ -130,11 +135,11 @@ public class ToDoApp {
         }
 
     }
+
     //DeleteToDoList
-    private static void deleteTodo () {
-        if (todoList.getTodos().isEmpty()) {
-            System.out.println("You have no TODOs to deletle");
-        } else {
+    private static void deleteTodo() {
+        displayTodo();
+        if (!todoList.getTodos().isEmpty()) {
             System.out.println("Delete TODO number: ");
             int index = scanner.nextInt();
             scanner.nextLine();
@@ -147,6 +152,6 @@ public class ToDoApp {
             System.out.println("Deleted!!!\n");
         }
     }
+}
 
-    }
 

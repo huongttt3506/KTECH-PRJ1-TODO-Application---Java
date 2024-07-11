@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ToDoList {
   private List<ToDo> todos;
-  protected static final String filename = "todoList.txt";
+  protected static String filename = "todoList.txt";
 
   public ToDoList() {
     this.todos = new ArrayList<>();
@@ -16,14 +16,10 @@ public class ToDoList {
     return todos;
   }
 
-  // Create to-do filename
-  public void create() {
-    add(new ArrayList<>());
-  }
-
-  // add more to-do
-  public void add(List<ToDo> todos) {
-      this.todos = todos;
+  // Create To-do
+  public void create(String title, LocalDate until) {
+    ToDo todo = new ToDo(title, until);
+    todos.add(todo);
     TodoReadWrite.saveData(todos, filename);
   }
 
@@ -37,7 +33,7 @@ public class ToDoList {
       }
       // if input new due date, setDueDate - else : not change
       if (dueDate != null) {
-        todo.setDueDate(dueDate);
+        todo.setUntil(dueDate);
       }
       // save to file
       TodoReadWrite.saveData(todos, filename);

@@ -36,7 +36,7 @@ public class TodoReadWrite {
              BufferedWriter writer = new BufferedWriter(fileWriter)) {
             for (ToDo todo : todos) {
                 String line = todo.getTitle() + "," +
-                        todo.getDueDate();
+                        todo.getUntil();
                 writer.write(line);
             }
         } catch (IOException e) {
