@@ -1,5 +1,5 @@
 
-# KTECT JAVA PROJECT 1
+# K-TECH JAVA PROJECT 1
 
 ## TODO Application
 KTech 백엔드 과겅의 틀 안에서 진행되는 개인 포로젝트이다.
