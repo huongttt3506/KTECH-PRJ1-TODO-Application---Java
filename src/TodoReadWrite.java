@@ -12,9 +12,12 @@ public class TodoReadWrite {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] value = line.split(",");
-                if (value.length >= 2) { // Ensure there are at least two parts in the line
+                if (value.length >= 3) { // Ensure there are at least two parts in the line
                     String title = value[0].trim();
                     String dateStr = value[1].trim();
+                    String doneStr = value[2].trim();
+                    //Parse done status
+                    boolean done = Boolean.parseBoolean(doneStr);
                     if (!dateStr.isEmpty() && !dateStr.equals("null")) { // Check for null or empty
                         try {
                             LocalDate dueDate = LocalDate.parse(dateStr);

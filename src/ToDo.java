@@ -11,7 +11,6 @@ public class ToDo {
     public ToDo(String title, LocalDate until) {
         this.title = title;
         this.until = until;
-        // The default when creating a new to-do  is unfinished
         this.done = false;
     }
     //Setter & Getter
@@ -41,14 +40,8 @@ public class ToDo {
 
     @Override
     public String toString() {
-        if (done) {
-            return "Title: " + title + "\n"
-                    + "Until: " + until + "\n" +
-                    "(done)\n";
-        } else {
-            return "Title: " + title + "\n"
-                    + "Until: " + until;
-        }
+        String status = done ? "(done)" : "";
+        return  title + '\'' + status + done;
     }
 
     public String toTxtRow() {

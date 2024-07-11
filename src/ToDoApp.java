@@ -1,9 +1,6 @@
 
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -24,11 +21,11 @@ public class ToDoApp {
             System.out.println("2. Edit TODO");
             System.out.println("3. Finish TODO");
             System.out.println("4. Delete TODO");
-            System.out.println("5. Exit\n");
+            System.out.println("5. Exit");
             // Input: (int) choice
-            System.out.println("Input: ");
             int choice;
-            try {choice = Integer.parseInt(scanner.nextLine());}
+            System.out.print("Input: ");
+            try {choice = Integer.parseInt(scanner.next());}
             catch (NumberFormatException e) {
                 System.out.println("Input must be an integer (1 ~ 5)");
                 continue;
@@ -59,7 +56,7 @@ public class ToDoApp {
     //Display ToDoList
     private static void displayTodo() {
         List<ToDo> todos = todoList.getTodos();
-        todos.sort(Comparator.comparing(ToDo::getUntil));
+        todos.sort(Comparator.comparing(ToDo::getUntil, Comparator.nullsLast(LocalDate::compareTo)));
         int countUndone = 0;
 
         if (todoList.getTodos().isEmpty()) {
@@ -94,14 +91,14 @@ public class ToDoApp {
     //Index 1: Create ToDoList
     private static void createTodo() {
         System.out.println("Title: ");
-        String title = scanner.nextLine();
+        String title = scanner.next();
         if (title.isEmpty()) {
             System.out.println("Title cannot be empty.");
             return;
         }
         LocalDate until = null;
         System.out.println("Until (yyyy-mm-dd): ");
-        String untilStr = scanner.nextLine();
+        String untilStr = scanner.next();
         try {
             until = LocalDate.parse(untilStr);
         }
@@ -110,6 +107,7 @@ public class ToDoApp {
             }
         todoList.create(title, until);
         System.out.println("Saved!!!\n");
+
     }
 
     //Edit ToDoList
