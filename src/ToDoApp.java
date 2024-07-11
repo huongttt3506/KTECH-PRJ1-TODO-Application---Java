@@ -2,7 +2,6 @@
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
 
 public class ToDoApp {
@@ -82,16 +81,14 @@ public class ToDoApp {
         String title = scanner.nextLine();
         scanner.nextLine();
         LocalDate until = null;
-        while (until == null) {
-            System.out.println("Until (yyyy-mm-dd): ");
-            String untilStr = scanner.nextLine();
-            scanner.nextLine();
-            try {
-                until = LocalDate.parse(untilStr);
-            } catch (DateTimeParseException e) {
+        System.out.println("Until (yyyy-mm-dd): ");
+        String untilStr = scanner.nextLine();
+        try {
+            until = LocalDate.parse(untilStr);
+        }
+        catch (DateTimeParseException e) {
                 System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
             }
-        }
         todoList.create(title, until);
         System.out.println("Saved!!!\n");
     }
@@ -108,15 +105,32 @@ public class ToDoApp {
                 System.out.println("Invalid TODO number!\n");
                 return;
             }
+            // Retrieve current values
+            ToDo currentToDo = todoList.getTodos().get(index);
+            String currentTitle = currentToDo.getTitle();
+            LocalDate currentUntil = currentToDo.getUntil();
+
             System.out.println("Title: ");
-            String title = scanner.nextLine();
+            String newTitle = scanner.nextLine();
+            if (newTitle.isEmpty()) {
+                newTitle = currentTitle; // Keep current title if input is empty
+            }
+            LocalDate newUntil = null;
             System.out.println("Until (yyyy-mm-dd): ");
-            String untilStr = scanner.nextLine();
-            LocalDate until = LocalDate.parse(untilStr);
-            todoList.edit(index, title, until);
+            String newUntilStr = scanner.nextLine();
+            if (!newUntilStr.isEmpty()) {
+                try {
+                    newUntil = LocalDate.parse(newUntilStr);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format. Keeping current date.");
+                    newUntil = currentUntil; // Keep current date on error
+                }
+            } else {
+                newUntil = currentUntil; // Keep current date if input is empty
+            }
+            todoList.edit(index, newTitle, newUntil);
             System.out.println("Saved!!!\n");
         }
-
     }
 
     //Finish

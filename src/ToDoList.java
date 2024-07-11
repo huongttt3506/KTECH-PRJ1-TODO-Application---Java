@@ -22,6 +22,12 @@ public class ToDoList {
     todos.add(todo);
     TodoReadWrite.saveData(todos, filename);
   }
+  // Add more to-do
+  public void add(List<ToDo> todos) {
+    this.todos.addAll(todos);
+    TodoReadWrite.saveData(this.todos, filename);
+  }
+
 
   // Edit to-do
   public void edit(int index, String title, LocalDate dueDate) {
